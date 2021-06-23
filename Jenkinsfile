@@ -1,7 +1,7 @@
 pipeline {
 
     parameters {
-        string(name: 'environment', defaultValue: 'terraform', description: 'Workspace/environment file to use for deployment')
+        //string(name: 'environment', defaultValue: 'terraform', description: 'Workspace/environment file to use for deployment')
         booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
 
     }
@@ -20,22 +20,17 @@ pipeline {
     stages {
         stage('checkout') {
             steps {
-                 script{
-                        dir("terraform")
-                        {
-                            sh 'git clone https://github.com/VijaySHegde/terraform-demo.git'
-                        }
-                    }
+                 checkout scm
                 }
             }
 
         stage('Plan') {
             steps {
-                sh 'pwd;cd terraform/terraform-demo ; terraform init -input=false'
-                sh 'pwd;cd terraform/terraform-demo ; terraform workspace new ${environment}'
-                sh 'pwd;cd terraform/terraform-demo ; terraform workspace select ${environment}'
-                sh "pwd;cd terraform/terraform-demo ;terraform plan -input=false -out tfplan "
-                sh 'pwd;cd terraform/terraform-demo ;terraform show -no-color tfplan > tfplan.txt'
+                sh 'terraform init -input=false'
+                sh 'terraform workspace new ${environment}'
+                sh 'terraform workspace select ${environment}'
+                sh "terraform plan -input=false -out tfplan"
+                sh 'terraform show -no-color tfplan > tfplan.txt'
             }
         }
         stage('Approval') {
@@ -47,7 +42,7 @@ pipeline {
 
            steps {
                script {
-                    def plan = readFile 'terraform/terraform-demo/tfplan.txt'
+                    def plan = readFile 'tfplan.txt'
                     input message: "Do you want to apply the plan?",
                     parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
                }
@@ -56,7 +51,7 @@ pipeline {
 
         stage('Apply') {
             steps {
-                sh "pwd;cd terraform/terraform-demo ; terraform apply -input=false tfplan"
+                sh "terraform apply -input=false tfplan"
             }
         }
     }
