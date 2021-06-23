@@ -23,7 +23,7 @@ pipeline {
                  script{
                         dir("terraform")
                         {
-                            git "https://github.com/VijaySHegde/terraform-demo.git"
+                            sh 'git clone https://github.com/VijaySHegde/terraform-demo.git'
                         }
                     }
                 }
