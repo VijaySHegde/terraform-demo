@@ -12,7 +12,7 @@ variable "availability_zone" {
 }
 variable "key_name" {
   description = "key name"
-  default = "may"
+  default = "docker-practise"
 }
 variable "instance_ami" {
   description = "AMI for aws EC2 instance"
