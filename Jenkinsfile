@@ -12,7 +12,7 @@ pipeline {
 //         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
 //     }
 
-    agent { node { label 'docker' } }
+    agent { node { label 'master' } }
         options {
                 timestamps ()
                // ansiColor('xterm')
